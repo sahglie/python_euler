@@ -17,7 +17,6 @@
 
 def truncated_subsets(prime):
     if len(prime) == 1: return [prime]
-
     subsets = []
     for i in range(1, len(prime)):
         subsets.append(prime[i:len(prime)])
@@ -25,7 +24,6 @@ def truncated_subsets(prime):
     return subsets
 
 def is_truncatable_prime(prime, primes):
-    reducer = lambda x: x in primes
     subsets = truncated_subsets(prime)
     truncatable_primes = [i for i in subsets if i in primes]
     return len(truncatable_primes) == len(subsets)
