@@ -1,26 +1,27 @@
 #! /usr/bin/env python
 
 
-def calc_cycle_length(n):
+def calc_cycle_length(num):
+    div = 10
+    dividends = set([10])
     digits = []
-    remainders = set([10])
-    d = 10
-    
+
+    while div < num:
+        digits.append(0)
+        div *= 10
+
     while True:
-        while d < n:
-            digits.append(0)
-            d *= 10
-            
-        if (d % n) == 0:
+        if div % num == 0:
             return []
+
+        digit = div / num
+        digits.append(digit)
+        div = div % num * 10
+
+        if div in dividends:
+            return digits
         else:
-            a = d / n
-            digits.append(a)
-            d = (d - (n * a)) * 10
-            if d in remainders:
-                return digits
-            else:
-                remainders.add(d)
+            dividends.add(div)
 
 
 if "__main__" == __name__:
