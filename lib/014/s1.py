@@ -25,16 +25,14 @@ def chain_length(n, cache={}):
         return cache[n]
     elif n == 1:
         return 1
-    elif n % 2 == 0:
+    
+    if n % 2 == 0:
         n /= 2
-        l = chain_length(n, cache)
-        cache[n] = l
-        return l + 1
     else:
         n = (3 * n) + 1
-        l = chain_length(n, cache)
-        cache[n] = l
-        return l + 1
+
+    cache[n] = chain_length(n, cache)
+    return cache[n] + 1
 
 if "__main__" == __name__:
     longest_chain = (0, 0)
