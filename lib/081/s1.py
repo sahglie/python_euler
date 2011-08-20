@@ -5,7 +5,6 @@ import sys
 import math
 
 
-
 class Graph:
     INF = sys.maxint
     
@@ -44,7 +43,7 @@ class Graph:
     def distance(self, n1, n2):
         return self.matrix[n1][n2]
 
-    def closest_node(self, visited, start):
+    def closest_node(self, start, visited):
         closest_unvisited = [0, self.INF]
         for node in range(1, len(self.matrix)):
             node_dist = self.matrix[start][node]
@@ -57,9 +56,9 @@ class Graph:
         visited = set([start])
         curr = start
         while len(visited) < len(self.matrix):
-            self.__update_shortest_path(start, curr)
-            curr = self.closest_node(visited, start)
+            curr = self.closest_node(start, visited)
             visited.add(curr)
+            self.__update_shortest_path(start, curr)
 
     def __update_shortest_path(self, start, curr):
         d = self.distance(start, curr)
