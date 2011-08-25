@@ -1,8 +1,10 @@
 #!/opt/local/bin/python
 
+import pdb
 import unittest
 import sys
 import math
+from heapq import *
 
 
 class Graph:
@@ -39,35 +41,31 @@ class Graph:
             if i != node and n != self.INF:
                 nodes.append(i)
         return nodes
-
-    def distance(self, n1, n2):
-        return self.matrix[n1][n2]
-
-    def closest_node(self, start, visited):
-        closest_unvisited = [0, self.INF]
-        for node in range(1, len(self.matrix)):
-            node_dist = self.matrix[start][node]
-            if (node not in visited) and (node_dist < closest_unvisited[1]):
-                closest_unvisited = [node, node_dist]
-        return closest_unvisited[0]
     
     def find_shortest_path(self, start, end):
-        path = [start]
-        visited = set([start])
+        self.pq = []
+        for i in range(1, len(self.matrix)):
+            heappush(self.pq, (self.matrix[start][i], i))
+            
         curr = start
-        while len(visited) < len(self.matrix):
-            curr = self.closest_node(start, visited)
-            visited.add(curr)
+        while self.pq:
+            curr = heappop(self.pq)[1]
             self.__update_shortest_path(start, curr)
 
     def __update_shortest_path(self, start, curr):
-        d = self.distance(start, curr)
+        d = self.matrix[start][curr]
         for node in self.adj_nodes(curr):
-            d1 = self.distance(start, node)
-            d2 = self.distance(curr, node)
+            d1 = self.matrix[start][node]
+            d2 = self.matrix[curr][node]
             if d1 > d + d2:
                 self.matrix[start][node] = d + d2
-            
+                self.update_pq(start, node, d + d2)
+        heapify(self.pq)
+        
+    def update_pq(self, start, node, val):
+        for i,elem in enumerate(self.pq):
+            if elem[1] == node:
+                self.pq[i] = (val, node)
 
 if __name__ == "__main__":
     g = Graph(6400)
