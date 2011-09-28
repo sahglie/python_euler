@@ -16,11 +16,11 @@ def number_2_word(n):
     
     word = []
     if thousands:
-        word.append("one thousand")
+        word.append("onethousand")
     if hundreds:
-        word.append("%s hundred " % D[hundreds])
+        word.append("%shundred" % D[hundreds])
         if teens or tens or ones:
-            word.append("and ")
+            word.append("and")
     if teens:
         word.append(D[teens])
         return "".join(word)
@@ -32,5 +32,4 @@ def number_2_word(n):
 
 
 if __name__ == "__main__":
-    words = [number_2_word(n) for n in xrange(1, 1001)]
-    print len("".join(words).replace("-", "").replace(" ", ""))
+    print len("".join([number_2_word(n) for n in xrange(1, 1001)]))
