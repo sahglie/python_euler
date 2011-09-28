@@ -34,17 +34,12 @@ triangle containing one-hundred rows; it cannot be solved by brute force,
 and requires a clever method! ;o)
 """
 
-
 if __name__ == "__main__":
     fd = open("data.txt")
-    triangle = []
-    for row in fd.readlines():
-        triangle.append(map(int, row.strip().split(" ")))
+    grid = [map(int, row.strip().split(" ")) for row in fd.readlines()]
     fd.close()
 
-    for row in reversed(range(0,len(triangle)-1)):
-        for i,col in enumerate(triangle[row]):
-            left = col+triangle[row+1][i]
-            right = col+triangle[row+1][i+1]
-            triangle[row][i] = max(left, right)
-    print triangle[0][0]
+    for row in range(len(grid)-1, 0, -1):
+        for i,col in enumerate(grid[row]):
+            grid[row][i] = max(col+grid[row+1][i], col+grid[row+1][i+1])
+    print grid[0][0]
