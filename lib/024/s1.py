@@ -15,10 +15,7 @@ What is the millionth lexicographic permutation of the digits
 
 
 if __name__ == "__main__":
-    
     for i, perm in enumerate(itertools.permutations("0123456789")):
         if i == 1000000-1:
             break
     print "".join(perm)
-
-
