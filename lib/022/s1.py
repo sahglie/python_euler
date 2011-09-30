@@ -14,16 +14,11 @@ COLIN would obtain a score of 938  53 = 49714.
 What is the total of all the name scores in the file?
 """
 
-EXPR = re.compile(r'([A-Z]+)')
-
-def clean(name):
-    return re.search(EXPR, name).group(1)
-
 def name_value(position, word):
     return sum(ord(c) - 64 for c in word) * position
 
 if __name__ == "__main__":
-    with open("names.txt") as fd:
-        names = sorted(map(clean, fd.read().split(",")))
+    with open("names.txt") as f:
+        names = sorted(name[1:-1] for name in f.read().strip().split(","))
         print sum(name_value(i+1, name) for i, name in enumerate(names))
 
