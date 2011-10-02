@@ -24,16 +24,19 @@ that produces the maximum number of primes for consecutive values of n,
 starting with n = 0.
 """
 
-import itertools
-from Queue import PriorityQueue
 from math import sqrt
+
+PRIME_CACHE = set()
 
 
 def is_prime(n):
+    if n in PRIME_CACHE: return True
+    
     if n < 2: return False
-    for i in xrange(2, int(sqrt(n)+1)):
+    for i in xrange(2, int(n**.5+1)):
         if not n % i:
             return False
+    PRIME_CACHE.add(n)
     return True
 
 def num_primes(a, b):
@@ -44,17 +47,16 @@ def num_primes(a, b):
             primes += 1
             n += 1
         else:
-            return (-1*primes, a, b)
+            return (primes, a, b)
 
 
 if __name__ == "__main__":
-    pq = PriorityQueue()
-    for a in xrange(0, 1000):
+    max = (0, 0, 0)
+    for a in xrange(-999, 1000):
         for b in xrange(a, 1000):
-            pq.put(num_primes(a, b))
-            pq.put(num_primes(-1*a, b))
-            pq.put(num_primes(a, -1*b))
-            pq.put(num_primes(-1*a, -1*b))
-    sol = pq.get()
-    print sol[1] * sol[2]
+            if b % 2 and is_prime(b):
+                n = num_primes(a, b)
+                if n[0] > max[0]:
+                    max = n
+    print max[1] * max[2]
             
