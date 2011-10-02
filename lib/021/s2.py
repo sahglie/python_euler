@@ -21,21 +21,25 @@ Evaluate the sum of all the amicable numbers under 10000.
 import math
 import time
 
+
 def divisors_sum(n, cache):
     if cache.get(n, 0):
         return cache[n]
-    
-    total = 0
-    for i in xrange(2, (n/2)+1):
+
+    total = 1
+    sqr = int(math.sqrt(n))
+    for i in xrange(2, sqr+1):
         if not n % i:
-            total += i
+            total += i + n/i
+    if sqr*sqr == n:
+        n = n - sqr
     cache[n] = total
     return total
 
 
 if "__main__" == __name__:
     start = time.clock()
-    
+
     total = 0
     cache = {}
     for n in xrange(1, 10001):
@@ -43,6 +47,6 @@ if "__main__" == __name__:
         if n != d and n == divisors_sum(d, cache):
             total += n
     print total
-    
+
     end = time.clock()
     print 'Code time %.3fs' % (end - start)
