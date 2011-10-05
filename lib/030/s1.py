@@ -17,6 +17,7 @@ powers of their digits.
 from itertools import permutations
 
 
+
 def sum_of_5th_powers(n):
     total = 0
     while n != 0:
@@ -28,8 +29,7 @@ def sum_of_5th_powers(n):
 
 if __name__ == "__main__":
     fifth_powers = set()
-    for i in xrange(2, 590491):
+    for i in xrange(9, 6*(9**5)+1):
         if i == sum_of_5th_powers(i):
             fifth_powers.add(i)
     print sum(fifth_powers)
-        
