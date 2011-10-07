@@ -19,15 +19,12 @@ from itertools import permutations
 
 
 if __name__ == "__main__":
-    digits = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    pandigitals = []
-    for n in xrange(1, 10):
-        pandigitals.extend(permutations(digits[0:n]))
-    
+    digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     primes = []
-    for pandigital in pandigitals:
-        n = int("".join(map(str, pandigital)))
-        if is_prime(n):
-            primes.append(n)
+    for n in xrange(1, 10):
+        for pandigital in permutations(digits[0:n]):
+            n = int("".join(pandigital))
+            if n % 2 and is_prime(n):
+                primes.append(n)
     print max(primes)
 
