@@ -7,4 +7,4 @@ Find the last ten digits of the series, 1**1 + 2**2 + 3**3 + ... + 1000**1000.
 """
 
 if __name__ == "__main__":
-    print sum(n**n for n in xrange(1, 1001)) % 10000000000
+    print sum(n**n for n in xrange(1, 1001)) % 10**10
