@@ -1,6 +1,5 @@
 #!/opt/local/bin/python
 
-
 import unittest
 from s1 import Hand
 
@@ -42,10 +41,6 @@ class TestHandRecognition(unittest.TestCase):
     def test_two_pair(self):
         self.assertTrue(Hand(["2C", "2S", "2D", "2H", "6C"]).two_pairs())
         self.assertFalse(Hand(["10C", "JH", "QS", "KC", "AC"]).two_pairs())   
-
-    def test_highest_card_rank(self):
-        self.assertEquals("6", Hand(["2C", "2S", "2D", "2H", "6C"]).highest_card_rank(1))
-        self.assertEquals("2", Hand(["2C", "2S", "2D", "2H", "6C"]).highest_card_rank(2))
 
 
 class TestHandScore(unittest.TestCase):
