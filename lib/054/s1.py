@@ -66,7 +66,7 @@ class Hand:
     def __init__(self, cards):
         self.str_cards = cards[::]
         for m in self.HIGH_CARD_MAPPING:
-            for i, card in enumerate(tuple(cards)):
+            for i, card in enumerate(cards):
                 if card.startswith(m):
                     cards[i] = card.replace(m, self.HIGH_CARD_MAPPING[m])
         cards.sort(key=self.rank_score)
