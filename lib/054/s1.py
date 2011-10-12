@@ -154,7 +154,7 @@ class Hand:
         return int(self.rank(card))
 
     def __nth_highest_card_score(self, n = 1):
-        cards = map(int, list(set(map(self.rank, self.cards))))
+        cards = list(set(map(self.rank_score, self.cards)))
         cards.sort()
         return cards[::-1][n-1]
 
