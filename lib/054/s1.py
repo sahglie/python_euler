@@ -43,18 +43,9 @@ Hand	 	Player 1	 	Player 2	 	Winner
                 Full House              Full House
                 With Three Fours        with Three Threes
 
-
-The file, poker.txt, contains one-thousand random hands dealt to two players.
-Each line of the file contains ten cards (separated by a single space): the
-first five are Player 1's cards and the last five are Player 2's cards. You
-can assume that all hands are valid (no invalid characters or repeated cards),
-each player's hand is in no specific order, and in each hand there is a clear
-winner.
-
 How many hands does Player 1 win?
 """
 
-import unittest
 from pdb import set_trace
 
 
@@ -62,54 +53,51 @@ class Hand:
     CARDS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
     SUITS = set(["C", "D", "H", "S"])
     HIGH_CARD_MAPPING = {"T":"10", "J":"11", "Q":"12", "K":"13", "A":"14"}
-    
+
+    ROYAL_FLUSH     = 9
+    STRAIGHT_FLUSH  = 8
+    FOUR_OF_A_KIND  = 7
+    FULL_HOUSE      = 6
+    FLUSH           = 5
+    STRAIGHT        = 4
+    THREE_OF_A_KIND = 3
+    TWO_PAIRS       = 2
+    ONE_PAIR        = 1
+    NO_HAND         = 0
+
     def __init__(self, cards):
+        self.str_cards = cards[::]
         for m in self.HIGH_CARD_MAPPING:
             for i, card in enumerate(tuple(cards)):
                 if card.startswith(m):
                     cards[i] = card.replace(m, self.HIGH_CARD_MAPPING[m])
-
-        def card_sort_key(x):
-            return int(self.rank(x))
-        
-        cards.sort(key=card_sort_key)
+        cards.sort(key=self.rank_score)
         self.cards = tuple(cards)
 
+    def __str__(self):
+        return self.str_cards
+    
     def score(self):
         if self.royal_flush():
-            return self.score_royal_flush()
+            return self.ROYAL_FLUSH
         elif self.straight_flush():
-            return self.score_straight_flush()
+            return self.STRAIGHT_FLUSH
         elif self.four_of_a_kind():
-            return self.score_four_of_a_kind()
+            return self.FOUR_OF_A_KIND
         elif self.full_house():
-            return self.score_full_house()
+            return self.FULL_HOUSE
         elif self.flush():
-            return self.score_flush()
+            return self.FLUSH
         elif self.straight():
-            return self.score_straight()
+            return self.STRAIGHT
         elif self.three_of_a_kind():
-            return self.score_three_of_a_kind()
+            return self.THREE_OF_A_KIND
         elif self.two_pairs():
-            return self.score_two_pairs()
+            return self.TWO_PAIRS
         elif self.one_pair():
-            return self.score_one_pair()
+            return self.ONE_PAIR
         else:
-            return 0
-
-    def __cmp__(self, other):
-        if self.score() < other.score():
-            return -1
-        elif self.score() > other.score():
-            return 1
-        else:
-            n = 1
-            while True:
-                if self.highest_card_rank(n) < other.highest_card_rank(n):
-                    return -1
-                elif self.highest_card_rank(n) > other.highest_card_rank(n):
-                    return 1
-                n += 1
+            return self.NO_HAND
 
     def royal_flush(self):
         """Royal Flush: Ten, Jack, Queen, King, Ace, in same suit."""
@@ -122,52 +110,44 @@ class Hand:
 
     def four_of_a_kind(self):
         """Four of a Kind: Four cards of the same value."""
-        return self.__n_pairs(4, self.cards) > -1
+        return self.__find_repeating(4, self.cards) > -1
 
     def full_house(self):
         """Full House: Three of a kind and a pair."""
-        cards = list(self.cards)
-        index = self.__n_pairs(3, cards)
-        if index > -1:
-            for i in range(index, index+3):
-                cards.pop(index)
-            return self.__n_pairs(2, cards) > -1
-        else:
-            return False
+        return self.__has_pairs(3, 2)
     
     def flush(self):
         """Flush: All cards of the same suit."""
-        for s in self.SUITS:
-            if all(map(lambda x: self.suit(x) == s, self.cards)):
+        for suit in self.SUITS:
+            if all(map(lambda x: self.suit(x) == suit, self.cards)):
                 return True
         return False
     
     def straight(self):
         """Straight: All cards are consecutive values."""
-        values = map(int, map(self.rank, self.cards))
+        values = map(self.rank_score, self.cards)
         equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
-        return equalized.count(values[0]) == 5
+        if equalized.count(values[0]) == 5:
+            return True
+        elif self.__is_ace(values[4]):
+            values[4] = 1
+            values.sort()
+            equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
+            return equalized.count(values[0]) == 5
+        else:
+            return False
 
     def three_of_a_kind(self):
         """Three of a Kind: Three cards of the same value."""
-        return self.__n_pairs(3, self.cards) > -1
+        return self.__find_repeating(3, self.cards) > -1
 
     def two_pairs(self):
         """Two Pairs: Two different pairs."""
-        cards = list(self.cards)
-        index = self.__n_pairs(2, cards)
-        if index > -1:
-            cards = cards[index+2:]
-            return self.__n_pairs(2, cards) > -1
-        else:
-            return False
+        return self.__has_pairs(2, 2)
     
     def one_pair(self):
         """One Pair: Two cards of the same value."""
-        return self.__n_pairs(2, self.cards) > -1
-    
-    def highest_card_rank(self, n = 1):
-        return map(self.rank, list(set(self.cards)))[n]
+        return self.__find_repeating(2, self.cards) > -1
 
     def suit(self, card):
         return card[-1:]
@@ -175,173 +155,81 @@ class Hand:
     def rank(self, card):
         return card[:-1]
 
-    def score_royal_flush(self):
-        return self.__sum_cards_rank(self.cards)
+    def rank_score(self, card):
+        return int(self.rank(card))
 
-    def score_straight_flush(self):
-        return self.__sum_cards_rank(self.cards) + 2
+    def __nth_highest_card_score(self, n = 1):
+        cards = map(int, list(set(map(self.rank, self.cards))))
+        cards.sort()
+        return cards[::-1][n-1]
 
-    def score_four_of_a_kind(self):
-        index = self.__n_pairs(4, self.cards)
-        return self.__sum_cards_rank(self.cards[index:index+4])
+    def __score_repeating(self, n):
+        index = self.__find_repeating(n, self.cards)
+        return self.rank_score(self.cards[index])
 
-    def score_full_house(self):
-        index = self.__n_pairs(3, self.cards)
-        three = self.cards[index:index+3]
-        remaining_cards = self.cards[index+3:]
-        index = self.__n_pairs(2, remaining_cards)
-        pair = remaining_cards[index:index+2]
-        return self.__sum_cards_rank(three+pair) + 14
-
-    def score_flush(self):
-        return self.__sum_cards_rank(self.cards)
+    def __is_ace(self, card):
+        return card == 14
     
-    def score_straight(self):
-        return self.__sum_cards_rank(self.cards) - 7
-        
-    def score_three_of_a_kind(self):
-        index = self.__n_pairs(3, self.cards)
-        return self.__sum_cards_rank(self.cards[index:index+3])
-
-    def score_two_pairs(self):
-        index = self.__n_pairs(2, self.cards)
-        pair1 = self.cards[index:index+2]
-        remaining_cards = self.cards[index+2:]
-        index = self.__n_pairs(2, remaining_cards)
-        pair2 = remaining_cards[index:index+2]
-        return self.__sum_cards_rank(pair1+pair2) - 13
-
-    def score_one_pair(self):
-        index = self.__n_pairs(2, self.cards)
-        return self.__sum_cards_rank(self.cards[index:index+2])
-
-    def __n_pairs(self, n, cards):
+    def __find_repeating(self, n, cards):
         values = map(self.rank, cards)
         for i, rank in enumerate(values):
             if values.count(rank) >= n:
                 return i
         return -1
 
-    def __sum_cards_rank(self, cards):
-        return sum(map(lambda x: int(self.rank(x)), cards))
+    def __has_pairs(self, pair1_count, pair2_count):
+        cards = list(self.cards)
+        index = self.__find_repeating(pair1_count, cards)
+        if index > -1:
+            for i in range(index, index+pair1_count):
+                cards.pop(index)
+            return self.__find_repeating(pair2_count, cards) > -1
+        else:
+            return False
 
+    def __cmp__(self, other):
+        if self.score() < other.score():
+            return -1
+        elif self.score() > other.score():
+            return 1
+        else:
+            if self.score() == self.FULL_HOUSE:
+                return self.__cmp_pairs(other, [3, 2])
+            elif self.score() == self.FOUR_OF_A_KIND:
+                return self.__cmp_pairs(other, [4])
+            elif self.score() == self.THREE_OF_A_KIND:
+                return self.__cmp_pairs(other, [3])
+            elif self.score() == self.TWO_PAIRS:
+                return self.__cmp_pairs(other, [2, 2])
+            elif self.score() == self.ONE_PAIR:
+                return self.__cmp_pairs(other, [2])
+            else:
+                return self.__cmp_highest_card(other)
 
-class TestHandRecognition(unittest.TestCase):
-    def test_flush(self):
-        self.assertTrue(Hand(["10C", "2C", "QC", "KC", "AC"]).flush())
-        self.assertFalse(Hand(["10C", "JH", "QS", "KC", "AC"]).flush())
-    
-    def test_royal_flush(self):
-        self.assertTrue(Hand(["10C", "JC", "QC", "KC", "AC"]).royal_flush())
-        self.assertFalse(Hand(["10C", "JH", "QS", "KC", "AC"]).royal_flush())
-
-    def test_straight_flush(self):
-        self.assertTrue(Hand(["2C", "3C", "4C", "5C", "6C"]).straight_flush())
-        self.assertFalse(Hand(["2C", "3H", "4S", "5C", "6C"]).straight_flush())
-
-    def test_full_house(self):
-        self.assertTrue(Hand(["2C", "2D", "2H", "5C", "5D"]).full_house())
-
-    def test_four_of_a_kind(self):
-        self.assertTrue(Hand(["2C", "2S", "2D", "2H", "AC"]).four_of_a_kind())
-        self.assertFalse(Hand(["3C", "JH", "QS", "KC", "AC"]).four_of_a_kind())
-
-    def test_three_of_a_kind(self):
-        self.assertTrue(Hand(["2C", "2S", "2D", "KC", "AC"]).three_of_a_kind())
-        self.assertFalse(Hand(["3C", "JH", "QS", "KC", "AC"]).three_of_a_kind())
-
-    def test_straight(self):
-        self.assertTrue(Hand(["2C", "3S", "4D", "5C", "6C"]).straight())
-        self.assertTrue(Hand(["10C", "JH", "QS", "KC", "AC"]).straight())     
-        self.assertFalse(Hand(["3C", "JH", "QS", "KC", "AC"]).straight())
-
-    def test_one_pair(self):
-        self.assertTrue(Hand(["2C", "2S", "4D", "5C", "6C"]).one_pair())
-        self.assertFalse(Hand(["10C", "JH", "QS", "KC", "AC"]).one_pair())    
-
-    def test_two_pair(self):
-        self.assertTrue(Hand(["2C", "2S", "2D", "2H", "6C"]).two_pairs())
-        self.assertFalse(Hand(["10C", "JH", "QS", "KC", "AC"]).two_pairs())   
-
-    def test_highest_card_rank(self):
-        self.assertEquals("6", Hand(["2C", "2S", "2D", "2H", "6C"]).highest_card_rank(1))
-        self.assertEquals("2", Hand(["2C", "2S", "2D", "2H", "6C"]).highest_card_rank(2))
-
-
-class TestHandScore(unittest.TestCase):
-    def setUp(self):
-        self.royal_flush = Hand(["TC", "JC", "QC", "KC", "AC"])
-        self.straight_flush = Hand(["9C", "TC", "JC", "QC", "KC"])
-        self.four_of_a_kind = Hand(["9C", "AH", "AS", "AD", "AC"])
-        self.full_house = Hand(["KC", "KD", "AD", "AS", "AC"])
-        self.flush = Hand(["8C", "TC", "JC", "QC", "KC"])
-        self.straight = Hand(["TD", "JS", "QC", "KH", "AC"])
-        self.three_of_a_kind = Hand(["8H", "TD", "AS", "AC", "AD"])
-        self.two_pairs = Hand(["8H", "KD", "KS", "AC", "AD"])
-        self.one_pair = Hand(["3H", "1D", "5S", "AC", "AD"])
-
-    def test_hands(self):
-        self.assertTrue(self.royal_flush.royal_flush())
-        self.assertTrue(self.straight_flush.straight_flush())
-        self.assertTrue(self.four_of_a_kind.four_of_a_kind())
-        self.assertTrue(self.full_house.full_house())
-        self.assertTrue(self.flush.flush())
-        self.assertTrue(self.straight.straight())
-        self.assertTrue(self.three_of_a_kind.three_of_a_kind())
-        self.assertTrue(self.two_pairs.two_pairs())
-        self.assertTrue(self.one_pair.one_pair())
+    def __cmp_pairs(self, other, pairs_length):
+        for l in pairs_length:
+            if self.__score_repeating(l) < other.__score_repeating(l):
+                return -1
+            elif self.__score_repeating(l) > other.__score_repeating(l):
+                return 1
+        return self.__cmp_highest_card(other)
         
-    def test_royal_flush_always_wins(self):
-        self.assertTrue(self.royal_flush > self.straight_flush,
-                        "%s > %s" % (self.royal_flush.score(), self.straight_flush.score()))
-        self.assertTrue(self.straight_flush > self.four_of_a_kind,
-                        "%s > %s" % (self.straight_flush.score(), self.four_of_a_kind.score()))
-        self.assertTrue(self.four_of_a_kind > self.full_house,
-                        "%s > %s" % (self.four_of_a_kind.score(), self.full_house.score()))
-        self.assertTrue(self.full_house > self.flush,
-                        "%s > %s" % (self.full_house.score(), self.flush.score()))
-        self.assertTrue(self.flush > self.straight,
-                        "%s > %s" % (self.flush.score(), self.straight.score()))
-        self.assertTrue(self.straight > self.three_of_a_kind,
-                        "%s > %s" % (self.straight.score(), self.three_of_a_kind.score()))
-        self.assertTrue(self.three_of_a_kind > self.two_pairs,
-                        "%s > %s" % (self.three_of_a_kind.score(), self.two_pairs.score()))
-        self.assertTrue(self.two_pairs > self.one_pair,
-                        "%s > %s" % (self.two_pairs.score(), self.one_pair.score()))
+    def __cmp_highest_card(self, other):
+        n = 1
+        while True:
+            if self.__nth_highest_card_score(n) < other.__nth_highest_card_score(n):
+                return -1
+            elif self.__nth_highest_card_score(n) > other.__nth_highest_card_score(n):
+                return 1
+            n += 1
 
-class TestWins(unittest.TestCase):
-    def test_hands(self):
-        pair_of_fives = Hand(["5H", "5C", "6S", "7S", "KD"])
-        pair_of_eights = Hand(["2C", "3S", "8S", "8D", "TD"])
-        self.assertTrue(pair_of_eights > pair_of_fives)
-
-        highest_card_ace = Hand(["5D", "8C", "9S", "JS", "AC"])
-        highest_card_queen = Hand(["2C", "5C", "7D", "8S", "QH"])
-        self.assertTrue(highest_card_ace > highest_card_queen)
-
-        # three_aces = Hand(["2D", "9C", "AS", "AH", "AC"])
-        # flush_w_diamonds = Hand(["3D", "6D", "7D", "TD", "QD"])
-        # self.assertTrue(flush_w_diamonds > three_aces)
-
-        pair_of_queens_high_card_nine = Hand(["4D", "6S", "9H", "QH", "QC"])
-        pair_of_queens_high_card_seven = Hand(["3D", "6D", "7H", "QD", "QS"])
-        self.assertTrue(pair_of_queens_high_card_nine > pair_of_queens_high_card_seven)
-
-        full_house_w_fours = Hand(["2H", "2D", "4C", "4D", "4S"])
-        full_house_w_threes = Hand(["3C", "3D", "3S", "9S", "9D"])
-        full_house_w_fours > full_house_w_threes
-        self.assertTrue(full_house_w_fours > full_house_w_threes)
     
 if __name__ == "__main__":
-    unittest.main()
-    # player1_wins = 0
-    # player2_wins = 0
-    # with open("poker.txt") as f:
-    #     for line in f.readlines():
-    #         l = line.strip().split(" ")
-    #         h1, h2 = Hand(l[0:5]), Hand(l[5:10])
-    #         if h1 < h2:
-    #             player2_wins += 1
-    #         elif h2 < h1:
-    #             player1_wins += 1
-    # print player1_wins
+    player1_wins = 0
+    with open("poker.txt") as f:
+        for line in f.readlines():
+            cards = line.strip().split(" ")
+            h1, h2 = Hand(cards[0:5]), Hand(cards[5:10])
+            if h1 > h2:
+                player1_wins += 1
+    print player1_wins
