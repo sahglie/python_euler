@@ -99,8 +99,7 @@ class Hand:
 
     def royal_flush(self):
         """Royal Flush: Ten, Jack, Queen, King, Ace, in same suit."""
-        return self.flush() and \
-               set(map(self.rank, self.cards)) == { "10", "11", "12", "13", "14" }
+        return self.flush() and map(self.rank, self.cards) == ["10", "11", "12", "13", "14"]
 
     def straight_flush(self):
         """Straight Flush: All cards are consecutive values of same suit."""
