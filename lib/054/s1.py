@@ -224,11 +224,11 @@ class Hand:
 
     
 if __name__ == "__main__":
-    player1_wins = 0
+    p1_hands_won = 0
     with open("poker.txt") as f:
         for line in f.readlines():
             cards = line.strip().split(" ")
-            h1, h2 = Hand(cards[0:5]), Hand(cards[5:10])
-            if h1 > h2:
-                player1_wins += 1
-    print player1_wins
+            p1_hand, p2_hand = Hand(cards[0:5]), Hand(cards[5:10])
+            if p1_hand > p2_hand:
+                p1_hands_won += 1
+    print p1_hands_won
