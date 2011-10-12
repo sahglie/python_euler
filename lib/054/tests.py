@@ -31,7 +31,7 @@ class TestHandRecognition(unittest.TestCase):
     def test_straight(self):
         self.assertTrue(Hand(["2C", "3S", "4D", "5C", "6C"]).straight())
         self.assertTrue(Hand(["10C", "JH", "QS", "KC", "AC"]).straight())
-        self.assertTrue(Hand(["AC", "2H", "3S", "4C", "5C"]).straight())                
+        self.assertTrue(Hand(["AC", "2H", "3S", "4C", "5C"]).straight())
         self.assertFalse(Hand(["3C", "JH", "QS", "KC", "AC"]).straight())
 
     def test_one_pair(self):

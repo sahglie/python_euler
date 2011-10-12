@@ -46,8 +46,6 @@ Hand	 	Player 1	 	Player 2	 	Winner
 How many hands does Player 1 win?
 """
 
-from pdb import set_trace
-
 
 class Hand:
     CARDS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
@@ -110,7 +108,7 @@ class Hand:
 
     def four_of_a_kind(self):
         """Four of a Kind: Four cards of the same value."""
-        return self.__find_repeating(4, self.cards) > -1
+        return self.__find_repeating_rank(4, self.cards) > -1
 
     def full_house(self):
         """Full House: Three of a kind and a pair."""
@@ -126,20 +124,18 @@ class Hand:
     def straight(self):
         """Straight: All cards are consecutive values."""
         values = map(self.rank_score, self.cards)
-        equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
-        if equalized.count(values[0]) == 5:
+        if self.__are_consecutive(values):
             return True
         elif self.__is_ace(values[4]):
             values[4] = 1
             values.sort()
-            equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
-            return equalized.count(values[0]) == 5
+            return self.__are_consecutive(values)
         else:
             return False
 
     def three_of_a_kind(self):
         """Three of a Kind: Three cards of the same value."""
-        return self.__find_repeating(3, self.cards) > -1
+        return self.__find_repeating_rank(3, self.cards) > -1
 
     def two_pairs(self):
         """Two Pairs: Two different pairs."""
@@ -147,7 +143,7 @@ class Hand:
     
     def one_pair(self):
         """One Pair: Two cards of the same value."""
-        return self.__find_repeating(2, self.cards) > -1
+        return self.__find_repeating_rank(2, self.cards) > -1
 
     def suit(self, card):
         return card[-1:]
@@ -163,14 +159,14 @@ class Hand:
         cards.sort()
         return cards[::-1][n-1]
 
-    def __score_repeating(self, n):
-        index = self.__find_repeating(n, self.cards)
+    def __score_repeating_rank(self, n):
+        index = self.__find_repeating_rank(n, self.cards)
         return self.rank_score(self.cards[index])
 
     def __is_ace(self, card):
         return card == 14
     
-    def __find_repeating(self, n, cards):
+    def __find_repeating_rank(self, n, cards):
         values = map(self.rank, cards)
         for i, rank in enumerate(values):
             if values.count(rank) >= n:
@@ -179,40 +175,44 @@ class Hand:
 
     def __has_pairs(self, pair1_count, pair2_count):
         cards = list(self.cards)
-        index = self.__find_repeating(pair1_count, cards)
+        index = self.__find_repeating_rank(pair1_count, cards)
         if index > -1:
             for i in range(index, index+pair1_count):
                 cards.pop(index)
-            return self.__find_repeating(pair2_count, cards) > -1
+            return self.__find_repeating_rank(pair2_count, cards) > -1
         else:
             return False
 
-    def __cmp__(self, other):
-        if self.score() < other.score():
+    def __are_consecutive(self, values):
+        equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
+        return equalized.count(values[0]) == 5
+               
+    def __cmp__(self, other_hand):
+        if self.score() < other_hand.score():
             return -1
-        elif self.score() > other.score():
+        elif self.score() > other_hand.score():
             return 1
         else:
             if self.score() == self.FULL_HOUSE:
-                return self.__cmp_pairs(other, [3, 2])
+                return self.__cmp_pairs(other_hand, [3, 2])
             elif self.score() == self.FOUR_OF_A_KIND:
-                return self.__cmp_pairs(other, [4])
+                return self.__cmp_pairs(other_hand, [4])
             elif self.score() == self.THREE_OF_A_KIND:
-                return self.__cmp_pairs(other, [3])
+                return self.__cmp_pairs(other_hand, [3])
             elif self.score() == self.TWO_PAIRS:
-                return self.__cmp_pairs(other, [2, 2])
+                return self.__cmp_pairs(other_hand, [2, 2])
             elif self.score() == self.ONE_PAIR:
-                return self.__cmp_pairs(other, [2])
+                return self.__cmp_pairs(other_hand, [2])
             else:
-                return self.__cmp_highest_card(other)
+                return self.__cmp_highest_card(other_hand)
 
-    def __cmp_pairs(self, other, pairs_length):
+    def __cmp_pairs(self, other_hand, pairs_length):
         for l in pairs_length:
-            if self.__score_repeating(l) < other.__score_repeating(l):
+            if self.__score_repeating_rank(l) < other_hand.__score_repeating_rank(l):
                 return -1
-            elif self.__score_repeating(l) > other.__score_repeating(l):
+            elif self.__score_repeating_rank(l) > other_hand.__score_repeating_rank(l):
                 return 1
-        return self.__cmp_highest_card(other)
+        return self.__cmp_highest_card(other_hand)
         
     def __cmp_highest_card(self, other):
         n = 1
