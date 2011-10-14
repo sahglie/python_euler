@@ -183,8 +183,10 @@ class Hand:
             return False
 
     def __are_consecutive(self, values):
-        equalized = [values[0], values[1]-1, values[2]-2, values[3]-3, values[4]-4]
-        return equalized.count(values[0]) == 5
+        for i in xrange(0, len(values)-1):
+            if values[i]+1 != values[i+1]:
+                return False
+        return True
                
     def __cmp__(self, other_hand):
         if self.score() < other_hand.score():
