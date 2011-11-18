@@ -17,22 +17,21 @@ What is the largest 1 to 9 pandigital 9-digit number that can be formed as
 the concatenated product of an integer with (1,2, ... , n) where n > 1?
 """
 
-import os, sys
-cmd_folder = os.path.abspath(os.path.curdir).split("/")
-cmd_folder.pop()
-sys.path.insert(0, "/".join(cmd_folder))
+import itertools
 
-from utils import is_pandigital
+PANDIGITAL = set('123456789')
+def is_pandigital(number):
+    digits = str(number)
+    return len(digits) == 9 and set(digits) == PANDIGITAL
 
 if __name__ == "__main__":
-    numbers = [1, 2, 3, 4, 5]
     pandigitals = []
-    while len(numbers) > 1:
-        for i in [9, 99, 999, 9999]:
-            pandigital = "".join([str(i * n) for n in numbers])
-            if len(pandigital) > 9:
-                break
-            elif is_pandigital(int(pandigital)):
-                pandigitals.append(int(pandigital))
-        numbers.pop()
+    numbers = [1, 2, 3, 4, 5]
+    nines = [[9], range(90, 100), range(900, 1000), range(9000, 10000)]
+    for i in itertools.chain(*nines):
+        pandigital = "".join([str(i * n) for n in numbers])
+        if len(pandigital) > 9:
+            numbers.pop()
+        elif is_pandigital(int(pandigital)):
+            pandigitals.append(int(pandigital))
     print max(pandigitals)
