@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-import os, sys
-cmd_folder = os.path.abspath(os.path.curdir).split("/")
-cmd_folder.pop()
-sys.path.insert(0, "/".join(cmd_folder))
-
 import itertools
 
 PANDIGITALS = set('123456789')
