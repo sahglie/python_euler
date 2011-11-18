@@ -25,10 +25,10 @@ sys.path.insert(0, "/".join(cmd_folder))
 from utils import is_pandigital
 
 if __name__ == "__main__":
-    numbers = [1, 2, 3, 4, 5, 6]
+    numbers = [1, 2, 3, 4, 5]
     pandigitals = []
     while len(numbers) > 1:
-        for i in xrange(2, 10000):
+        for i in [9, 99, 999, 9999]:
             pandigital = "".join([str(i * n) for n in numbers])
             if len(pandigital) > 9:
                 break
