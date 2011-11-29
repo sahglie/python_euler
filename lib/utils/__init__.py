@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 def prime_gen():
     D = {}
@@ -14,6 +15,8 @@ def prime_gen():
 
 PANDIGITALS = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
 def is_pandigital(n):
+    """Determins if an integer contains all the digits 1-9 exactly once
+    """
     if n < 123456789:
         return False
     
@@ -49,10 +52,8 @@ def make_n_pandigital(digits):
 PRIME_CACHE = set()
 def is_prime(n):
     if n in PRIME_CACHE: return True
-    
     if n < 2: return False
     for i in xrange(2, int(n**.5+1)):
-        if not n % i:
-            return False
+        if not n % i: return False
     PRIME_CACHE.add(n)
     return True
