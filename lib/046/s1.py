@@ -25,14 +25,13 @@ from utils import is_prime
 
 
 def sum_of_prime_and_twice_square(number, primes):
-    x = 0
-    while primes[x] < number:
-        for y in xrange(1, number - primes[x]):
-            result = primes[x] + (2 * y**2)
-            if number == result: return (primes[x], y)
+    for prime in primes:
+        if prime > number: return False
+        for n in xrange(1, number - prime):
+            result = prime + (2 * n**2)
+            if number == result: return True
             elif result > number: break
-        x += 1
-    return ()
+    return False
 
 
 if __name__ == "__main__":
