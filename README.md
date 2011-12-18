@@ -1,4 +1,4 @@
 Python Euler
 ============
 
-My Python solutions to project euler.
+My Python solutions to project euler!
