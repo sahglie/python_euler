@@ -54,6 +54,6 @@ def is_prime(n):
     if n in PRIME_CACHE: return True
     if n < 2: return False
     for i in xrange(2, int(n**.5+1)):
-        if not n % i: return False
+        if n % i == 0: return False
     PRIME_CACHE.add(n)
     return True
