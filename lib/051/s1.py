@@ -20,16 +20,11 @@ sys.path.insert(0, "/".join(package_root))
 
 from utils import is_prime
 
-def generate_patterns(num):
-    patterns = []
-    if num == "": return patterns
-    for i in range(0, len(num)):
-        prefix = num[:i] + "*"
-        patterns.append(prefix + num[i+1:])
-        patterns.extend([prefix + n for n in generate_patterns(num[i+1:])])
-    if "*" * len(num) in patterns:
-        patterns.remove("*" * len(num))
-    return patterns
+
+DIGITS = "0123456789"
+
+def generate_masks(num):
+    return [num.replace(d, "*") for d in DIGITS if num.count(d) > 1]
 
 def find_prime_family(patterns, size):
     db = dict().fromkeys(patterns, None)
@@ -45,14 +40,14 @@ def find_prime_family(patterns, size):
         if len(v) == size: return min(v)
     return 0
 
+
 if __name__ == "__main__":
-    prime = 56004
+    prime = 56003
     solution = 0
     while True:
-        if is_prime(prime):
-            patterns = generate_patterns(str(prime))
-            solution = find_prime_family(patterns, 8)
+        if is_prime(prime) and [d for d in DIGITS if str(prime).count(d) > 1]:
+            masks = generate_masks(str(prime))
+            solution = find_prime_family(masks, 8)
             if solution: break
-        prime += 1
-        
+        prime += 2
     print solution
