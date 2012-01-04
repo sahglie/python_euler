@@ -22,18 +22,15 @@ from utils import is_prime
 
 
 def is_prime_family(masks, size):
-    db = dict().fromkeys(masks, None)
+    db = dict().fromkeys(masks, 0)
     for key,val in db.items():
-        db[key] = []
         for n in range(0, 10):
             if n == 0 and key[0] == "*": continue
             num = int(key.replace("*", str(n)))
-            if is_prime(num):
-                db[key].append(num)
-
-    for k,v in db.items():
-        if len(v) == size: return min(v)
-    return 0
+            if is_prime(num): db[key] += 1
+        if db[key] == size:
+            return True
+    return False
 
 
 if __name__ == "__main__":
