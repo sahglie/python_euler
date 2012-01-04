@@ -21,13 +21,8 @@ sys.path.insert(0, "/".join(package_root))
 from utils import is_prime
 
 
-DIGITS = "0123456789"
-
-def generate_masks(num):
-    return [num.replace(d, "*") for d in DIGITS if num.count(d) > 1]
-
-def find_prime_family(patterns, size):
-    db = dict().fromkeys(patterns, None)
+def is_prime_family(masks, size):
+    db = dict().fromkeys(masks, None)
     for key,val in db.items():
         db[key] = []
         for n in range(0, 10):
@@ -42,11 +37,12 @@ def find_prime_family(patterns, size):
 
 
 if __name__ == "__main__":
+    digits = "0123456789"
     prime = 56003
     while True:
-        if is_prime(prime) and [d for d in DIGITS if str(prime).count(d) > 1]:
-            masks = generate_masks(str(prime))
-            if find_prime_family(masks, 8):
-                break
+        if is_prime(prime):
+            p = str(prime)
+            masks = [p.replace(d, "*") for d in digits if p.count(d) > 1]
+            if is_prime_family(masks, 8): break
         prime += 2
     print prime
