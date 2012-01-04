@@ -43,11 +43,10 @@ def find_prime_family(patterns, size):
 
 if __name__ == "__main__":
     prime = 56003
-    solution = 0
     while True:
         if is_prime(prime) and [d for d in DIGITS if str(prime).count(d) > 1]:
             masks = generate_masks(str(prime))
-            solution = find_prime_family(masks, 8)
-            if solution: break
+            if find_prime_family(masks, 8):
+                break
         prime += 2
-    print solution
+    print prime
