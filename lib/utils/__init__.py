@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+import math
+
+def primes_sieve(n):
+    primes = range(0, n+1)
+    for p in xrange(2, int(math.sqrt(n+1))+1):
+        for x in xrange(2*p, n+1, p):
+            primes[x] = 0
+    return [p for p in primes[2:] if p]
+
 def prime_gen():
     D = {}
     p = 2
