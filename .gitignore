@@ -1,1 +1,7 @@
 *.pyc
+/.ropeproject/config.py
+/lib/027/primes.txt
+/lib/082/matrix.txt
+/lib/082/small_matrix.txt
+/QUESTIONS.md
+/TODO.md
