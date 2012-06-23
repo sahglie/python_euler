@@ -20,8 +20,9 @@
 
 
 if "__main__" == __name__:
-    terms = set()
-    for a in range(2, 101):
-        for b in range(2, 101):
-            terms.add(a**b)
-    print len(terms)
+    terms = []
+    for a in range(2, 10):
+        terms.append([])
+        for b in range(2, 7):
+            terms[a-2].append(a**b)
+    print terms

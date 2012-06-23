@@ -20,11 +20,11 @@ if __name__ == "__main__":
     fractions = []
     for n in xrange(10, 100):
         for d in xrange(n, 100):
-            nr, nl = n % 10, n / 10
-            dr, dl = d % 10, d / 10
-            if dr != 0 and nr == dl and nr != nl:
+            n1, n2 = n / 10, n % 10
+            d1, d2 = d / 10, d % 10
+            if d2 != 0 and n2 == d1 and n2 != n1:
                 f = Fraction(n, d)
-                g = Fraction(nl, dr)
+                g = Fraction(n1, d2)
                 if f == g:
                     fractions.append(f)
     product = Fraction(1, 1)

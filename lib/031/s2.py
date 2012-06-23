@@ -29,5 +29,6 @@ def make_change(amount, coins, cache = {}):
 def make_key(amount, coins):
     return "%s - %s" %(amount, len(coins))
 
+
 if "__main__" == __name__:
     print make_change(200, [200, 100, 50, 20, 10, 5, 2, 1])

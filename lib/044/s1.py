@@ -32,7 +32,7 @@ class Pentagonals:
 
 
 if __name__ == "__main__":
-    limit = 10000
+    limit = 2501
     pentagonals = Pentagonals(limit)
     matches = []
     for pair in itertools.combinations(range(1, limit), 2):

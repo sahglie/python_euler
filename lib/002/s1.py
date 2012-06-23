@@ -20,8 +20,6 @@ def sum_even_fibs(max_val):
         x = tmp
 
     return sum
-        
-
 
 
 if __name__ == "__main__":

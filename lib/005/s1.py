@@ -8,42 +8,32 @@ What is the smallest positive number that is evenly divisible by
 all of the numbers from 1 to 20?
 """
 
-def prime_gen():
-    D = {}
-    q = 2
-    while True:
-        if q not in D:
-            D[q * q] = [q]
-            yield q
-        else:
-            for p in D[q]:
-                D.setdefault(q + p, []).append(p)
-            del D[q]
-        q += 1
-
+PRIMES = [2, 3, 5, 7, 11, 13, 17, 19]
 
 if "__main__" == __name__:
     prime_factors = {}
-    for i in range(2, 21):
+    for n in xrange(2, 21):
         factors = {}
-        n = i
-        for prime in prime_gen():
-            if prime > i:
+        i = n
+        for prime in PRIMES:
+            if prime > n:
                 break
-            elif prime == i:
+            elif prime == n:
                 prime_factors[prime] = 1
                 break
-            while n != 1:
-                if n % prime == 0:
-                    factors[prime] = factors.get(prime, 0) + 1
-                    n /= prime
-                else:
+            while i > 1:
+                if i % prime:
                     break
-            if prime_factors.get(prime):
-                prime_factors[prime] = max(factors.get(prime),
-                                           prime_factors[prime])
-                
+                i /= prime
+                factors[prime] = factors.get(prime, 0)
+                factors[prime] += 1
+
+        for f in factors.keys():
+            if prime_factors.get(f, 0) < factors[f]:
+                prime_factors[f] = factors[f]
+
     total = 1
-    for p in prime_factors.keys():
-        total *= p**prime_factors[p]
+    for i in prime_factors.keys():
+        total *= (i**prime_factors[i])
+
     print total

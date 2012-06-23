@@ -37,11 +37,11 @@ if __name__ == "__main__":
     max_len = 0
     with open("words.txt") as f:
         data = f.read().strip().split(",")
-        for w in data:
-            word = w[1:-1]
-            if len(word) > max_len:
-                max_len = len(word)
-            words.append(word)
+        for word in data:
+            cleaned_word = word[1:-1]
+            if len(cleaned_word) > max_len:
+                max_len = len(cleaned_word)
+            words.append(cleaned_word)
         max_value = max_len * letter_value("z")
         triangles_numbers = triangle_numbers_upto(max_value)
         for word in words:

@@ -31,6 +31,9 @@ def is_truncatable_prime(prime, primes):
 def prime_gen():
     """ Generate an infinite sequence of prime numbers.
     """
+    import pdb
+    pdb.set_trace()
+    
     D = {}  
     q = 2  
     while True:
@@ -56,4 +59,8 @@ def truncatable_primes_upto(n):
 
     
 if "__main__" == __name__:
-    print sum(truncatable_primes_upto(11))
+    g = prime_gen()
+
+    for i in range(1, 10):
+        print g.next()
+    # print sum(truncatable_primes_upto(11))

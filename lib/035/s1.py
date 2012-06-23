@@ -16,11 +16,14 @@ How many circular primes are there below one million?
 def prime_gen(limit):
     num = 2
     while num < limit:
-        if is_prime(num):
+        if num == 2:
             yield num
             num += 1
+        elif is_prime(num):
+            yield num
+            num += 2
         else:
-            num += 1
+            num += 2
 
 primes_cache = set([2])
 def is_prime(num, cache=primes_cache):
@@ -46,6 +49,7 @@ def is_circular_prime(num):
     result = [True for i in range(0, len(n)) 
               if is_prime(int(n[i:len(n)] + n[0:i]))]
     return len(result) == len(n)
+
 
 if __name__ == "__main__":
     print len([n for n in prime_gen(1000000)

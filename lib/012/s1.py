@@ -58,6 +58,7 @@ def num_divisors(tri):
             factors[prime] = factors.get(prime, 0) + 1
         if n == 1:
             break
+        
     num_factors = 1
     for n in factors.values():
         num_factors *= n+1

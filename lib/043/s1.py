@@ -23,12 +23,12 @@ from pdb import set_trace
 if __name__ == "__main__":
     primes = [2, 3, 5, 7, 11, 13, 17]
     special_pandigitals = []
-    for perm in permutations("0123456789"):
+    for perm in permutations("0123456789", 9):
         if not perm[0] == "0":
             divisible_by_primes = True
-            for n in xrange(1, 8):
+            for n in xrange(0, 7):
                 num = int("".join(perm[n:n+3]))
-                if num % primes[n-1]:
+                if num % primes[n]:
                     divisible_by_primes = False
                     break
             if divisible_by_primes:

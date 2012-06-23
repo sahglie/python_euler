@@ -18,10 +18,6 @@ The proper divisors of 284 are
 Evaluate the sum of all the amicable numbers under 10000.
 """
 
-import math
-import time
-
-
 def divisors_sum(n, cache):
     if cache.get(n, 0): return cache[n]
     
