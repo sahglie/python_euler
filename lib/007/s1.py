@@ -1,4 +1,4 @@
-#!/opt/local/bin/python
+#!/usr/bin/env/python
 
 
 """By listing the first six prime numbers:
@@ -25,6 +25,5 @@ def nth_prime(n):
         
     return q-1
 
-if "__main__" == __name__:
-    print nth_prime(10001)
+print(nth_prime(10001))
 

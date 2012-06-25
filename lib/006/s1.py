@@ -1,4 +1,4 @@
-#!/opt/local/bin/python
+#!/usr/bin/env python
 
 """The sum of the squares of the first ten natural numbers is,
 
@@ -14,12 +14,4 @@ Find the difference between the sum of the squares of the first
 one hundred natural numbers and the square of the sum.
 """
 
-def square_of_sums(n):
-    return (n*(n+1)/2)**2
-
-def sum_of_squares(n):
-    return n*(n+1)*(2*n+1)/6
-
-
-if "__main__" == __name__:
-    print square_of_sums(100) - sum_of_squares(100)
+print(abs(sum(x**2 for x in range(101)) - sum(range(101))**2))
