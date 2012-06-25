@@ -10,15 +10,16 @@ def sieve_primes(n):
     return [i for (i,n) in enumerate(primes) if n and i > 1]
 
 def prime_factors(n):
-    factors = set()
-    d = 2
+    from collections import defaultdict
+
+    factors, d = defaultdict(int), 2
     while n > 1:
         if n % d == 0:
             n /= d
-            factors.add(d)
+            factors[d] += 1
         else:
             d += 1
-    return sorted(list(factors))
+    return factors
 
 def prime_gen():
     D = {}
