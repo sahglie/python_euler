@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import math
 
 def sieve_primes(n):

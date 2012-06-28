@@ -9,12 +9,12 @@ def primes_sieve(n):
     elif n < 2:
         return []
 
-    sieve = range(0, n+1)
+    sieve = list(range(0, n))
+    l = len(sieve)
     
     i = 2
-    while i < math.sqrt(len(sieve)):
+    while i < math.sqrt(l):
         j = i+i
-        l = len(sieve)
         while j < l:
             sieve[j] = 0
             j += i
@@ -23,8 +23,6 @@ def primes_sieve(n):
             while sieve[i] == 0:
                 i += 1
 
-    return [i for i in sieve if i != 0 and i != 1]
+    return [i for i in sieve if i > 1]
 
-
-if "__main__" == __name__:
-    print sum(primes_sieve(2000000))
+print(sum(primes_sieve(2000000)))
